@@ -1,5 +1,5 @@
 class action(object):
-    def __init__(self, ticker, option_type, strike ,expiry,qty, buy, sell, buy_val, sell_val, date, trade_type):
+    def __init__(self, ticker, option_type, strike ,expiry,qty, buy, sell, buy_val, sell_val, date, trade_type, id='0'):
         self.ticker = ticker
         self.option_type = option_type
         self.strike = strike
@@ -11,6 +11,7 @@ class action(object):
         self.sell_val = sell_val
         self.date = date
         self.trade_type = trade_type #True for longing, False for shorting
+        self.id = id
 
 def calculate(call_df, put_df, positions, last_call_price, last_put_price):
     execute = []
@@ -57,12 +58,15 @@ def calculate(call_df, put_df, positions, last_call_price, last_put_price):
     if str(call_df.iloc[0]['datetime'])[11:] == '15:19:59':
         #buy all positions
         for p in positions:
-            new_action = action(p.ticker, p.option_type, p.strike, p.expiry, p.qty, True, False, p.value, 0, call_df.iloc[0].datetime, False)
+            if p.option_type == 'CE':
+                new_action = action(p.ticker, p.option_type, p.strike, p.expiry, p.qty, True, False, call_df.loc[p.strike].Close, 0, call_df.iloc[0].datetime, False, p.entry_time)
+            else:
+                new_action = action(p.ticker, p.option_type, p.strike, p.expiry, p.qty, True, False, put_df.loc[p.strike].Close, 0, put_df.iloc[0].datetime, False, p.entry_time)
             execute.append(new_action)
 
         return execute, None, None
-
-    if (int(call_df.loc[positions[0].strike].Close) - last_call_price)/last_call_price >= 0.3 and len(positions) < 3:
+    
+    if (int(call_df.loc[positions[0].strike].Close) - last_call_price)/last_call_price >= 0.3:
         #sell 4 lots of closest premium pe
         #finding closest premium pe:
         print('Last call MID - price:', last_call_price, ' - Last put MID price:', last_put_price)
@@ -87,7 +91,7 @@ def calculate(call_df, put_df, positions, last_call_price, last_put_price):
         return execute, last_call_price, last_put_price
     
 
-    elif (int(put_df.loc[positions[1].strike].Close) - last_put_price)/last_put_price >= 0.3 and len(positions) < 3:
+    elif (int(put_df.loc[positions[1].strike].Close) - last_put_price)/last_put_price >= 0.3:
         #sell 4 lots of closest premium ce
         print('Last call MID - price:', last_call_price, ' - Last put MID price:', last_put_price)
         print('Put Price Now: ', put_df.loc[positions[1].strike].Close)
@@ -111,7 +115,7 @@ def calculate(call_df, put_df, positions, last_call_price, last_put_price):
         last_put_price = put_df.loc[positions[1].strike].Close
         return execute, last_call_price, last_put_price
     
-    last_call_price = call_df.loc[positions[0].strike].Close
-    last_put_price = put_df.loc[positions[1].strike].Close
+    # last_call_price = call_df.loc[positions[0].strike].Close
+    # last_put_price = put_df.loc[positions[1].strike].Close
     
     return execute, last_call_price, last_put_price

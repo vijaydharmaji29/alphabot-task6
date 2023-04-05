@@ -15,7 +15,7 @@ all_datetimes.pop(0)
 
 all_datetime_modified = []
 datetime_max = datetime.strptime('2022-11-17 15:29:59', '%Y-%m-%d %H:%M:%S')
-datetime_min = datetime.strptime('2022-11-09 09:15:59', '%Y-%m-%d %H:%M:%S')
+datetime_min = datetime.strptime('2022-10-17 09:15:59', '%Y-%m-%d %H:%M:%S')
 
 for i in all_datetimes:
     datetime_obj = datetime.strptime(i, '%Y-%m-%d %H:%M:%S')

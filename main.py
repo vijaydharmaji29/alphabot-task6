@@ -49,10 +49,10 @@ def run():
 
             executed, capital, positions = executioner.trade(execute, capital, positions)
             for e in executed:
-                all_actions.append((e.date, e.option_type, e.strike, e.qty, e.sell, e.sell_val))
-                print(e.option_type, e.strike, e.qty, e.buy, e.sell_val)
+                all_actions.append((e.date, e.option_type, e.strike, e.qty, e.sell, e.sell_val, e.buy_val, e.id))
+                print(e.option_type, e.strike, e.qty, e.buy, e.sell_val, e.buy_val)
 
-        fields = ['Datetime', 'Option Type', 'Strike', 'Qty', 'Sell', 'Sell Value']
+        fields = ['Datetime', 'Option Type', 'Strike', 'Qty', 'Sell', 'Sell Value', 'Buy Value', 'ID']
 
         #writing to csv file
         with open('Data/actions.csv', 'w') as csvfile: 

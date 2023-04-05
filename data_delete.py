@@ -3,7 +3,7 @@ import csv
 from datetime import datetime
 
 def deleted(curr_rows):
-    mindate = datetime(2022, 11, 9, 9, 15, 59)
+    mindate = datetime(2022, 10, 17, 9, 15, 59)
     maxdate = datetime(2022, 11, 17, 15, 29, 59)
     new_rows = []
     ctr = 0

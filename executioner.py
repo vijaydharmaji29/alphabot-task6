@@ -1,5 +1,5 @@
 class position(object):
-    def __init__(self, ticker, strike, option_type, expiry, qty, value, trade_type):
+    def __init__(self, ticker, strike, option_type, expiry, qty, value, trade_type, entry_time):
         self.ticker = ticker
         self.strike = strike
         self.option_type = option_type
@@ -7,6 +7,7 @@ class position(object):
         self.value = value
         self.qty = qty
         self.trade_type = trade_type #shorting (false) or longing (true)
+        self.entry_time = entry_time
 
 def trade(execute, capital, positions):
     positions = positions
@@ -20,7 +21,7 @@ def trade(execute, capital, positions):
 
         if e.sell and e.trade_type == False: #short selling
             capital += e.sell_val
-            new_position = position(e.ticker, e.strike, e.option_type, e.expiry, e.qty, e.sell_val, False)
+            new_position = position(e.ticker, e.strike, e.option_type, e.expiry, e.qty, e.sell_val, False, e.date)
             executed.append(e)
             positions.append(new_position)
         
